@@ -10,7 +10,7 @@ import backtype.storm.tuple.Values;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import edu.usc.util.DataRecord;
+import edu.usc.util.TopKDataRecord;
 
 import org.apache.log4j.Logger;
 
@@ -18,23 +18,23 @@ public class TopKCalBolt extends BaseRichBolt {
     private OutputCollector _collector;
     private static final int k_size = 15;
     private static Logger log = Logger.getLogger(TopKCalBolt.class);
-    private PriorityQueue<DataRecord> heap;
+    private PriorityQueue<TopKDataRecord> heap;
 
     public TopKCalBolt() {}
 
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         _collector = collector;
-        heap = new PriorityQueue<DataRecord>(k_size);
+        heap = new PriorityQueue<TopKDataRecord>(k_size);
         log.info("LOG_INFO: TopKCalBolt class succeeds to prepare!");
     }
 
     @Override
     public void execute(Tuple anchor) {
-        DataRecord record = new DataRecord(anchor.getString(0), anchor.getFloat(1));
+        TopKDataRecord record = new TopKDataRecord(anchor.getString(0), anchor.getFloat(1));
         if(recordIsNeeded(record)) {
             insertRecord(record);
-            for(DataRecord r : heap) {
+            for(TopKDataRecord r : heap) {
                 _collector.emit(anchor, new Values(r.getName(), r.getScore()));
                 _collector.ack(anchor);
             }
@@ -46,7 +46,7 @@ public class TopKCalBolt extends BaseRichBolt {
         declarer.declare(new Fields("ID", "Score"));
     }
 
-    private boolean recordIsNeeded(DataRecord record) {
+    private boolean recordIsNeeded(TopKDataRecord record) {
         if(heap.size() < k_size || heap.peek().getScore() < record.getScore()) {
             return true;
         } else {
@@ -54,7 +54,7 @@ public class TopKCalBolt extends BaseRichBolt {
         }
     }
 
-    private void insertRecord(DataRecord record) {
+    private void insertRecord(TopKDataRecord record) {
         if(heap.size() < k_size) {
             heap.offer(record);
         } else {

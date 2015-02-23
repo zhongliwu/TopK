@@ -22,7 +22,7 @@ public class TopKFileRecorder extends TopKRecorder {
         initialize(fileName);
     }
 
-    public void writeToDisk(ArrayList<DataRecord> topList) {
+    public void writeToDisk(ArrayList<TopKDataRecord> topList) {
         try {
             LocalDateTime time = new DateTime().toLocalDateTime();
             String recordTime = time.getMonthOfYear() + "/"
@@ -37,7 +37,7 @@ public class TopKFileRecorder extends TopKRecorder {
             writer.write(recordTime + "\n");
             writer.write("=============================================\n");
             int i = 1;
-            for(DataRecord record : topList) {
+            for(TopKDataRecord record : topList) {
                 writer.write(Integer.toString(i) + ". " + record.toString() + "\n");
                 i++;
             }

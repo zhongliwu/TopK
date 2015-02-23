@@ -2,17 +2,9 @@ package edu.usc.util;
 
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.BulkWriteResult;
-import com.mongodb.Cursor;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.ParallelScanOptions;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -38,10 +30,10 @@ public class TopKDatabaseRecorder extends TopKRecorder {
     }
 
     @Override
-    public void writeToDisk (ArrayList<DataRecord> topList) {
+    public void writeToDisk (ArrayList<TopKDataRecord> topList) {
         BasicDBObject recordsDoc = new BasicDBObject();
         for (int i = 0; i < topList.size(); i++) {
-            DataRecord record = topList.get(i);
+            TopKDataRecord record = topList.get(i);
             recordsDoc.append(record.getName(), record.getScore());
         }
 
