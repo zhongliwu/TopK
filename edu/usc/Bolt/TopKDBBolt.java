@@ -26,7 +26,7 @@ public class TopKDBBolt extends BaseRichBolt {
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         heap = new PriorityQueue<TopKDataRecord>(k_size);
-        recorder = new TopKFileRecorder("rest_result.txt");
+        recorder = new TopKDatabaseRecorder();
         set = new HashSet();
         _collector = collector;
     }
