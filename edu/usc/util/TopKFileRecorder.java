@@ -1,4 +1,4 @@
-package edu.usc.util;
+package storm.starter.util;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -8,21 +8,41 @@ import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
-public class TopKFileRecorder extends TopKRecorder {
-    private String fileName;
-    private BufferedWriter writer;
+public class TopKFileRecorder {
+    private static String fileName;
+    private static BufferedWriter writer;
+    private static TopKFileRecorder instance;
 
-    public TopKFileRecorder() {
+    public static TopKFileRecorder getInstance (String s) {
+        if (instance == null) {
+            instance = new TopKFileRecorder(s);
+        }
+
+        return instance;
+    }
+
+
+    private TopKFileRecorder () {
         fileName = "";
         initialize(fileName);
     }
 
-    public TopKFileRecorder(String s) {
+    private TopKFileRecorder (String s) {
         fileName = s;
         initialize(fileName);
     }
 
-    public void writeToDisk(ArrayList<TopKDataRecord> topList) {
+    private void initialize(String file) {
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void writeToDisk (ArrayList<TopKDataRecord> topList) {
         try {
             LocalDateTime time = new DateTime().toLocalDateTime();
             String recordTime = time.getMonthOfYear() + "/"
@@ -50,15 +70,6 @@ public class TopKFileRecorder extends TopKRecorder {
     public void closeWrite() {
         try {
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initialize(String file) {
-        try {
-            writer = new BufferedWriter(new FileWriter(file));
-            writer.write("");
         } catch (IOException e) {
             e.printStackTrace();
         }

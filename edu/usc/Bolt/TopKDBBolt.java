@@ -1,4 +1,4 @@
-package edu.usc.bolt;
+package storm.starter.bolt;
 
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -7,17 +7,16 @@ import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
-import edu.usc.util.TopKDataRecord;
-import edu.usc.util.TopKDatabaseRecorder;
-import edu.usc.util.TopKRecorder;
-import edu.usc.util.TopKFileRecorder;
+import storm.starter.util.TopKDataRecord;
+import storm.starter.util.TopKDatabaseRecorder;
+import storm.starter.util.TopKFileRecorder;
 
 import java.util.*;
 
 public class TopKDBBolt extends BaseRichBolt {
     private PriorityQueue<TopKDataRecord> heap;
     private static final int k_size = 15;
-    private TopKRecorder recorder;
+    private TopKDatabaseRecorder recorder;
     private Set<String> set;
     private OutputCollector _collector;
 
@@ -26,7 +25,7 @@ public class TopKDBBolt extends BaseRichBolt {
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         heap = new PriorityQueue<TopKDataRecord>(k_size);
-        recorder = new TopKDatabaseRecorder();
+        recorder = TopKDatabaseRecorder.getInstance("", 0, "");
         set = new HashSet();
         _collector = collector;
     }
